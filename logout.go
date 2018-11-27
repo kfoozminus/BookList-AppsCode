@@ -31,7 +31,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	hasher.Write([]byte(sessionid))
 	sha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 
-	cookieValue := val.Username + ":" + sha
+	cookieValue := val.Username + ":" + ""
 	expire := time.Now().AddDate(0, 0, -1)
 	newCookie := http.Cookie{Name: "SessionID", Value: cookieValue, Expires: expire, HttpOnly: true}
 	http.SetCookie(w, &newCookie)

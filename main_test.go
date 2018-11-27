@@ -6,8 +6,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func TestMain(t *testing.T) {
@@ -23,7 +21,7 @@ func TestMain(t *testing.T) {
 			url:          "/",
 			expectedCode: http.StatusOK,
 		},
-		/*{
+		{
 			verb:         "GET",
 			url:          "/book",
 			expectedCode: http.StatusOK,
@@ -77,7 +75,7 @@ func TestMain(t *testing.T) {
 							"name" : "To Kill a Mockingbird",
 							"author" : "Harper Lee"
 						}`,
-			expectedCode: http.StatusOK,
+			expectedCode: http.StatusCreated,
 		},
 		{
 			verb: "PUT",
@@ -106,24 +104,31 @@ func TestMain(t *testing.T) {
 							"author" : "Haruki Murakami"
 						}`,
 			expectedCode: http.StatusUnauthorized,
-		},*/
+		},
 	}
 
+	//var r *http.Request
+	var lastSessionCookie http.Cookie
 	for index, test := range tests {
+
 		r, err := http.NewRequest(test.verb, test.url, strings.NewReader(test.jsonBody))
-		//spew.Dump(r)
 		if err != nil {
 			log.Fatal(err)
 		}
+		r.AddCookie(&lastSessionCookie)
+
 		w := httptest.NewRecorder()
 
 		Router.ServeHTTP(w, r)
-		spew.Dump(w)
-		//fmt.Printf("%v %v %v\n", index, w.Code, test.expectedCode)
+
+		for _, cookie := range w.Result().Cookies() {
+			if cookie.Name == "SessionID" {
+				lastSessionCookie = *cookie
+			}
+		}
 
 		if w.Code != test.expectedCode {
-			t.Errorf("Test %v : %v didn't return %v\n", index, test.url, test.expectedCode)
-			//t.Errorf("%v didn't return %v for %v", test.url, test.expectedCode, test.jsonBody)
+			t.Errorf("Test %v : %v method %v didn't return %v\n", index, test.verb, test.url, test.expectedCode)
 		}
 	}
 }

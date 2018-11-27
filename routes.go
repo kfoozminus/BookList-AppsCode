@@ -9,7 +9,7 @@ import (
 
 var Router = mux.NewRouter()
 
-func main() {
+func init() {
 	Router.HandleFunc("/", homePage).Methods("GET")
 	Router.HandleFunc("/book", showBooks).Methods("GET")
 	Router.HandleFunc("/book/{id}", showBook).Methods("GET")
@@ -20,6 +20,9 @@ func main() {
 	Router.HandleFunc("/login", authZ(login, false)).Methods("POST")
 	Router.HandleFunc("/logout", authZ(logout, true)).Methods("GET")
 	Router.HandleFunc("/register", authZ(register, false)).Methods("POST")
+}
+
+func main() {
 
 	err := http.ListenAndServe(":8080", Router)
 	log.Fatal(err)
