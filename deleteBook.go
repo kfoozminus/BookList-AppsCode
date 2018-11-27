@@ -6,15 +6,17 @@ import (
 	"strconv"
 )
 
-func updateBook(w http.ResponseWriter, r *http.Request) {
+func deleteBook(w http.ResponseWriter, r *http.Request) {
 	/*if isAuthorized(r) == false {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(Response{Success: 0, Message: "No Authorization Provided"})
 		return
 	}*/
+
 	mu.Lock()
 	defer mu.Unlock()
 
+	var delBook Book
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil {
 		//not valid
@@ -24,11 +26,11 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	for i, book := range bookList {
 		if book.Id == id {
-			_ = json.NewDecoder(r.Body).Decode(&bookList[i])
-			bookList[i].Id = id
+			delBook = book
+			bookList = append(bookList[:i], bookList[i+1:]...)
 
 			var _Book []Book
-			json.NewEncoder(w).Encode(Response{Success: 1, Message: "Updated Book Info Successfully!", Book: append(_Book, bookList[i])})
+			json.NewEncoder(w).Encode(Response{Success: 1, Message: "Deleted Book Successfully!", Book: append(_Book, delBook)})
 			return
 		}
 	}
