@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func updateBook(w http.ResponseWriter, r *http.Request) {
@@ -15,20 +17,28 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+
 	if err != nil {
-		//not valid
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(Response{Success: 0, Message: "Invalid ID"})
+		writeBad(w)
 		return
 	}
+
 	for i, book := range bookList {
 		if book.Id == id {
-			_ = json.NewDecoder(r.Body).Decode(&bookList[i])
-			bookList[i].Id = id
+			var updateBook Book
+			err = json.NewDecoder(r.Body).Decode(&updateBook)
 
-			var _Book []Book
-			json.NewEncoder(w).Encode(Response{Success: 1, Message: "Updated Book Info Successfully!", Book: append(_Book, bookList[i])})
+			if err == nil {
+
+				bookList[i] = updateBook
+				bookList[i].Id = id
+
+				json.NewEncoder(w).Encode(Response{Success: 1, Message: "Updated Book Info Successfully!", Book: []Book{bookList[i]}})
+			} else {
+				writeBad(w)
+			}
 			return
 		}
 	}

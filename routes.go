@@ -10,9 +10,9 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homePage).Methods("GET")
-	r.HandleFunc("/book", addBook).Methods("POST")
 	r.HandleFunc("/book", showBooks).Methods("GET")
-	//r.HandleFunc("/book/{id}", showBook).Methods("GET")
+	r.HandleFunc("/book", addBook).Methods("POST")
+	r.HandleFunc("/book/{id}", showBook).Methods("GET")
 	r.HandleFunc("/book/{id}", updateBook).Methods("PUT")
 	r.HandleFunc("/book/{id}", deleteBook).Methods("DELETE")
 	//r.HandleFunc("/login", login).Methods("GET")

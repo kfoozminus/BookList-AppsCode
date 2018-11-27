@@ -21,8 +21,7 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 
 	if err == nil {
 		if book.Name == "" || book.Author == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(Response{Success: 0, Message: "Invalid/Inefficient information"})
+			writeBad(w)
 			return
 		}
 
@@ -30,13 +29,10 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 		book.Id = ind
 		bookList = append(bookList, book)
 
-		var _Book []Book
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(Response{Success: 1, Message: "Added Book Successfully!", Book: append(_Book, book)})
+		json.NewEncoder(w).Encode(Response{Success: 1, Message: "Added Book Successfully!", Book: []Book{book}})
 
 	} else {
-
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(Response{Success: 0, Message: "Invalid/Inefficient information"})
+		writeBad(w)
 	}
 }
