@@ -15,13 +15,21 @@ func login(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	user, pass, logok := r.BasicAuth()
+	//user, pass, logok := r.BasicAuth()
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
 
-	if logok == true {
+	//if logok == true {
+	if err == nil {
 
-		if val, ok := userList[user]; ok {
+		if user.Username == "" || user.Password == "" {
+			writeBad(w)
+			return
+		}
 
-			if pass == val.Password {
+		if val, ok := userList[user.Username]; ok {
+
+			if user.Password == val.Password {
 
 				sessionid := strconv.Itoa(rand.Intn(1000000007))
 				hasher := sha1.New()
@@ -33,7 +41,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 				cookie := http.Cookie{Name: "SessionID", Value: cookieValue, Expires: expire, HttpOnly: true}
 				http.SetCookie(w, &cookie)
 
-				userList[user] = User{val.Username, val.Password, val.Name, sha}
+				userList[user.Username] = User{val.Username, val.Password, val.Name, sha}
+
+				w.WriteHeader(http.StatusOK)
 				json.NewEncoder(w).Encode(Response{Success: 1, Message: "Login Successful"})
 
 			} else {

@@ -27,6 +27,7 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 			delBook = book
 			bookList = append(bookList[:i], bookList[i+1:]...)
 
+			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(Response{Success: 1, Message: "Deleted Book Successfully!", Book: []Book{delBook}})
 			return
 		}

@@ -30,6 +30,7 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 				bookList[i] = updateBook
 				bookList[i].Id = id
 
+				w.WriteHeader(http.StatusOK)
 				json.NewEncoder(w).Encode(Response{Success: 1, Message: "Updated Book Info Successfully!", Book: []Book{bookList[i]}})
 			} else {
 				writeBad(w)

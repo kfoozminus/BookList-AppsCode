@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sync"
 )
@@ -46,5 +45,6 @@ func writeBad(w http.ResponseWriter) {
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the BookList RESTful API!")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(Response{Success: 1, Message: "Welcome to the BookList API!"})
 }

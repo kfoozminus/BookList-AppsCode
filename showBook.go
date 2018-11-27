@@ -25,6 +25,7 @@ func showBook(w http.ResponseWriter, r *http.Request) {
 
 		if book.Id == id {
 
+			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(Response{Success: 1, Message: "Fetched Book Information Successfully", Book: []Book{bookList[i]}})
 			return
 		}

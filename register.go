@@ -17,7 +17,8 @@ func register(w http.ResponseWriter, r *http.Request) {
 		writeBad(w)
 		return
 	}
-	if user.Name == "" || user.Password == "" || user.Name == "" {
+
+	if user.Username == "" || user.Password == "" || user.Name == "" {
 		writeBad(w)
 		return
 	}
@@ -29,5 +30,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userList[user.Username] = user
-	json.NewEncoder(w).Encode(Response{Success: 1, Message: "Successgully registered"})
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(Response{Success: 1, Message: "Successfully registered"})
 }
