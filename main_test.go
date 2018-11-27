@@ -117,7 +117,7 @@ func TestMain(t *testing.T) {
 		}
 		w := httptest.NewRecorder()
 
-		router.ServeHTTP(w, r)
+		Router.ServeHTTP(w, r)
 		spew.Dump(w)
 		//fmt.Printf("%v %v %v\n", index, w.Code, test.expectedCode)
 

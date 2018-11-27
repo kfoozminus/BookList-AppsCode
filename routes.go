@@ -7,20 +7,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var router = mux.NewRouter()
+var Router = mux.NewRouter()
 
 func main() {
-	router.HandleFunc("/", homePage).Methods("GET")
-	router.HandleFunc("/book", showBooks).Methods("GET")
-	router.HandleFunc("/book/{id}", showBook).Methods("GET")
+	Router.HandleFunc("/", homePage).Methods("GET")
+	Router.HandleFunc("/book", showBooks).Methods("GET")
+	Router.HandleFunc("/book/{id}", showBook).Methods("GET")
 
-	router.HandleFunc("/book", authZ(addBook, true)).Methods("POST")
-	router.HandleFunc("/book/{id}", authZ(updateBook, true)).Methods("PUT")
-	router.HandleFunc("/book/{id}", authZ(deleteBook, true)).Methods("DELETE")
-	router.HandleFunc("/login", authZ(login, false)).Methods("POST")
-	router.HandleFunc("/logout", authZ(logout, true)).Methods("GET")
-	router.HandleFunc("/register", authZ(register, false)).Methods("POST")
+	Router.HandleFunc("/book", authZ(addBook, true)).Methods("POST")
+	Router.HandleFunc("/book/{id}", authZ(updateBook, true)).Methods("PUT")
+	Router.HandleFunc("/book/{id}", authZ(deleteBook, true)).Methods("DELETE")
+	Router.HandleFunc("/login", authZ(login, false)).Methods("POST")
+	Router.HandleFunc("/logout", authZ(logout, true)).Methods("GET")
+	Router.HandleFunc("/register", authZ(register, false)).Methods("POST")
 
-	err := http.ListenAndServe(":8080", router)
+	err := http.ListenAndServe(":8080", Router)
 	log.Fatal(err)
 }
