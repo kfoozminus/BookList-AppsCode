@@ -6,12 +6,6 @@ import (
 )
 
 func addBook(w http.ResponseWriter, r *http.Request) {
-	/*if isAuthorized(r) == false {
-
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(Response{Success: 0, Message: "No Authorization Provided"})
-		return
-	}*/
 
 	mu.Lock()
 	defer mu.Unlock()

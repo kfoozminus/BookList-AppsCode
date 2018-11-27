@@ -11,13 +11,14 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homePage).Methods("GET")
 	r.HandleFunc("/book", showBooks).Methods("GET")
-	r.HandleFunc("/book", addBook).Methods("POST")
 	r.HandleFunc("/book/{id}", showBook).Methods("GET")
-	r.HandleFunc("/book/{id}", updateBook).Methods("PUT")
-	r.HandleFunc("/book/{id}", deleteBook).Methods("DELETE")
-	//r.HandleFunc("/login", login).Methods("GET")
-	//r.HandlerFunc("/logout", logout).Methods("GET")
-	//r.HandlerFunc("/register", register).Methods("GET")*/
+
+	r.HandleFunc("/book", authZ(addBook, true)).Methods("POST")
+	r.HandleFunc("/book/{id}", authZ(updateBook, true)).Methods("PUT")
+	r.HandleFunc("/book/{id}", authZ(deleteBook, true)).Methods("DELETE")
+	r.HandleFunc("/login", authZ(login, false)).Methods("GET")
+	r.HandleFunc("/logout", authZ(logout, true)).Methods("GET")
+	r.HandleFunc("/register", authZ(register, false)).Methods("POST")
 
 	err := http.ListenAndServe(":8080", r)
 	log.Fatal(err)

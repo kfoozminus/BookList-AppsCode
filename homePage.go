@@ -19,14 +19,14 @@ type Response struct {
 	Book    []Book `json:"book,omitempty"`
 }
 
-/*type User struct {
+type User struct {
 	Username      string `json:"username,omitempty"`
 	Password      string `json:"password,omitempty"`
 	Name          string `json:"name,omitempty"`
 	LastSessionID string `json:"lastsessionid,omitempty"`
 }
 
-var userList = make(map[string]User)*/
+var userList = make(map[string]User)
 
 var ind int
 
