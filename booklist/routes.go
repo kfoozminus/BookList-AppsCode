@@ -22,8 +22,8 @@ func init() {
 	Router.HandleFunc("/register", authZ(register, false)).Methods("POST")
 }
 
-func main() {
+func Main(port string) {
 
-	err := http.ListenAndServe(":8080", Router)
+	err := http.ListenAndServe(":"+port, Router)
 	log.Fatal(err)
 }
