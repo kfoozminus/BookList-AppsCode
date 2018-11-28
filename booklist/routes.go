@@ -1,8 +1,12 @@
 package booklist
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -24,6 +28,24 @@ func init() {
 
 func Main(port string) {
 
-	err := http.ListenAndServe(":"+port, Router)
-	log.Fatal(err)
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: Router,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+
+	waitForShutdown := 15 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), waitForShutdown)
+	defer cancel()
+	srv.Shutdown(ctx)
+	log.Println("Shutting Down")
 }
