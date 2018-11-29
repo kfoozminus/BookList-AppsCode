@@ -1,3 +1,5 @@
-FROM busybox:glibc
+FROM frolvlad/alpine-glibc
 COPY BookList-AppsCode /bin/booklist
-ENTRYPOINT ["/bin/booklist"]
+EXPOSE 4321
+CMD ["--port=4321"]
+ENTRYPOINT ["booklist"]
